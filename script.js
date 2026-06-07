@@ -24,7 +24,6 @@ let leftDown = false;
 let rightDown = false;
 let chordIndex = null;
 let chordUsed = false;
-let suppressNextContextMenu = false;
 
 function formatNumber(value) {
   const bounded = Math.max(-99, Math.min(999, value));
@@ -78,6 +77,20 @@ function updateMenu() {
   });
 }
 
+function resetInteractionState() {
+  leftDown = false;
+  rightDown = false;
+  chordIndex = null;
+  chordUsed = false;
+  clearPeek();
+  if (!gameOver) setFace("smile");
+}
+
+function syncMouseButtons(buttons) {
+  leftDown = (buttons & 1) !== 0;
+  rightDown = (buttons & 2) !== 0;
+}
+
 function resetGame(nextLevelName = levelName) {
   levelName = nextLevelName;
   level = LEVELS[levelName];
@@ -91,7 +104,6 @@ function resetGame(nextLevelName = levelName) {
   rightDown = false;
   chordIndex = null;
   chordUsed = false;
-  suppressNextContextMenu = false;
   stopTimer();
   setFace("smile");
   updateMineCounter();
@@ -119,17 +131,12 @@ function resetGame(nextLevelName = levelName) {
       });
       button.addEventListener("contextmenu", (event) => {
         event.preventDefault();
-        if (suppressNextContextMenu) {
-          suppressNextContextMenu = false;
-          return;
-        }
-        if (!chordUsed) markCell(indexOf(row, col));
       });
       button.addEventListener("mousedown", (event) => {
         handleCellMouseDown(event, indexOf(row, col));
       });
-      button.addEventListener("mouseenter", () => {
-        handleCellMouseEnter(indexOf(row, col));
+      button.addEventListener("mouseenter", (event) => {
+        handleCellMouseEnter(event, indexOf(row, col));
       });
       button.addEventListener("mouseup", () => {
         if (!gameOver && !leftDown && !rightDown) setFace("smile");
@@ -151,8 +158,7 @@ function resetGame(nextLevelName = levelName) {
 function handleCellMouseDown(event, index) {
   if (gameOver) return;
 
-  if (event.button === 0) leftDown = true;
-  if (event.button === 2) rightDown = true;
+  syncMouseButtons(event.buttons);
 
   if (leftDown && rightDown) {
     event.preventDefault();
@@ -160,10 +166,17 @@ function handleCellMouseDown(event, index) {
     return;
   }
 
+  if (event.button === 2) {
+    event.preventDefault();
+    markCell(index);
+    return;
+  }
+
   if (event.button === 0) setFace("ooh");
 }
 
-function handleCellMouseEnter(index) {
+function handleCellMouseEnter(event, index) {
+  syncMouseButtons(event.buttons);
   if (gameOver || !leftDown || !rightDown) return;
 
   const cell = cells[index];
@@ -184,7 +197,6 @@ function beginChord(index) {
   clearPeek();
   chordIndex = index;
   chordUsed = true;
-  suppressNextContextMenu = true;
   setFace("ooh");
   neighbors(cell.row, cell.col).forEach((nextIndex) => {
     const next = cells[nextIndex];
@@ -378,23 +390,18 @@ menuButtons.forEach((button) => {
 });
 
 document.addEventListener("mouseleave", () => {
-  leftDown = false;
-  rightDown = false;
-  chordIndex = null;
-  chordUsed = false;
-  suppressNextContextMenu = false;
-  clearPeek();
-  if (!gameOver) setFace("smile");
+  resetInteractionState();
 });
 
 document.addEventListener("mouseup", (event) => {
-  if (event.button === 0) leftDown = false;
-  if (event.button === 2) rightDown = false;
+  syncMouseButtons(event.buttons);
 
   if (!leftDown && !rightDown) {
     finishChord();
     if (!gameOver) setFace("smile");
   }
 });
+
+window.addEventListener("blur", resetInteractionState);
 
 resetGame();
