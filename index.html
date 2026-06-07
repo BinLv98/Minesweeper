@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>扫雷</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="desktop">
+    <section class="window" aria-label="经典扫雷游戏">
+      <div class="titlebar">
+        <span class="title-icon" aria-hidden="true"></span>
+        <span class="title-text">扫雷</span>
+        <div class="window-buttons" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="menubar" role="menubar">
+        <button class="menu-item" type="button" data-level="beginner">初级</button>
+        <button class="menu-item" type="button" data-level="intermediate">中级</button>
+        <button class="menu-item" type="button" data-level="expert">高级</button>
+      </div>
+
+      <div class="game-shell">
+        <div class="panel">
+          <div class="counter" id="mineCounter" aria-label="剩余地雷">010</div>
+          <button class="face face-smile" id="resetButton" type="button" aria-label="重新开始">
+            <span class="face-art" aria-hidden="true"></span>
+          </button>
+          <div class="counter" id="timer" aria-label="计时器">000</div>
+        </div>
+        <div class="board-wrap">
+          <div class="board" id="board" aria-label="扫雷棋盘"></div>
+        </div>
+      </div>
+
+      <div class="statusbar" id="status">初级：9 x 9，10 个雷</div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
