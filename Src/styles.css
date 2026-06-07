@@ -324,28 +324,26 @@ button {
 .cell.flagged::before {
   content: "";
   position: absolute;
-  left: 6px;
-  top: 4px;
-  width: 11px;
-  height: 8px;
+  left: 8px;
+  top: 3px;
+  width: 8px;
+  height: 9px;
   background: #ff0000;
-  clip-path: polygon(0 0, 100% 0, 78% 50%, 100% 100%, 0 100%);
-  box-shadow:
-    1px 1px 0 #b00000,
-    0 8px 0 -7px #000;
+  clip-path: polygon(0 0, 0 100%, 100% 50%);
+  box-shadow: inset -1px 0 0 #b00000;
 }
 
 .cell.flagged::after {
   content: "";
   position: absolute;
-  left: 4px;
-  top: 5px;
-  width: 13px;
+  left: 2px;
+  top: 3px;
+  width: 16px;
   height: 15px;
   background:
-    linear-gradient(#000 0 0) 2px 0 / 2px 13px no-repeat,
-    linear-gradient(#000 0 0) 0 13px / 10px 2px no-repeat,
-    linear-gradient(#000 0 0) 3px 10px / 6px 2px no-repeat;
+    linear-gradient(#000 0 0) 5px 0 / 2px 13px no-repeat,
+    linear-gradient(#000 0 0) 2px 11px / 8px 2px no-repeat,
+    linear-gradient(#000 0 0) 0 13px / 12px 2px no-repeat;
 }
 
 .cell.bad-flag::before,
